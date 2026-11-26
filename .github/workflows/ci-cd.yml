@@ -1,0 +1,56 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # 1. Этап проверки кода линтером (усложнённая версия)
+  lint:
+    name: Linter (Flake8)
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run flake8
+        run: flake8 app/ tests/ --max-line-length=120
+
+  # 2. Этап автоматического тестирования
+  test:
+    name: Unit Tests (Pytest)
+    runs-on: self-hosted
+    needs: lint  # Запустится только если прошёл линтер
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run pytest
+        run: pytest -v
+
+  # 3. Этап сборки Docker-образа и деплоя на продуктовый сервер
+  deploy:
+    name: Build Docker & Deploy to Prod
+    runs-on: self-hosted
+    needs: test  # Деплой произойдёт ТОЛЬКО при успешном прохождении тестов
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t mortgage-app:latest .
+
+      - name: Restart production container
+        run: |
+          docker stop mortgage-prod || true
+          docker rm mortgage-prod || true
+          docker run -d --name mortgage-prod --restart unless-stopped -p 5000:5000 mortgage-app:latest
