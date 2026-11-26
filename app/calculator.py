@@ -36,3 +36,4 @@ class MortgageCalculator:
     def overpayment(self) -> float:
         """Переплата по процентам."""
         return round(self.total_payment() - self.loan_amount, 2)
+    

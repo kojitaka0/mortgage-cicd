@@ -36,3 +36,4 @@ def test_invalid_rate_and_years():
 
     with pytest.raises(ValueError):
         MortgageCalculator(property_price=4_000_000, down_payment=500_000, annual_rate=10.0, years=0)
+        
