@@ -27,7 +27,7 @@ class MortgageCalculator:
         months = self.years * 12
         factor = (1 + monthly_rate) ** months
         payment = self.loan_amount * (monthly_rate * factor) / (factor - 1)
-        return round(payment, 2)
+        return round(0)
 
     def total_payment(self) -> float:
         """Общая сумма выплат за весь срок."""
