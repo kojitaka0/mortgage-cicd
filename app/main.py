@@ -17,7 +17,7 @@ HTML_TEMPLATE = """
     </style>
 </head>
 <body>
-    <h2>Калькулятор ипотеки v2.0</h2>
+    <h2>Калькулятор ипотеки</h2>
     <form method="POST">
         <label>Стоимость недвижимости (₽):</label>
         <input type="number" step="any" name="price" value="{{ price }}" required>
